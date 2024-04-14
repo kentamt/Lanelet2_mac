@@ -33,13 +33,13 @@ Change `lanelet2_python/CMakeLists.txt` based on your python version.
 For 3.12
 ```
 find_package(Python3 3.12 EXACT REQUIRED COMPONENTS Interpreter Development)
-find_package(Boost 1.58.0 REQUIRED COMPONENTS python312 filesystem)```
+find_package(Boost 1.58.0 REQUIRED COMPONENTS python312 filesystem)
 ```
 
 For 3.11
 ```
 find_package(Python3 3.11 EXACT REQUIRED COMPONENTS Interpreter Development)
-find_package(Boost 1.58.0 REQUIRED COMPONENTS python311 filesystem)```
+find_package(Boost 1.58.0 REQUIRED COMPONENTS python311 filesystem)
 ```
 
 ## Cmake & make
