@@ -1,12 +1,14 @@
 # Lanelet2 for Mac
-Lanelet2 for Apple Silicon Mac. It eliminates the need for ROS, catkin, and conan, and installs dependencies from Homebrew.
+Lanelet2 for Apple Silicon Mac, eliminating the need for ROS, Catkin, and Conan.
 
 # Tested Environment
 - Apple M1
 - MacOS Sonoma 14.3.1
-- Python 3.11
-- Boost 1.84
 - Python 3.11 and 3.12
+- Boost 1.84
+- Boost_python 3.12
+- Geographiclib 2.3
+- Eigen 3.4
 
 # Install
 ## Dependencies
@@ -50,13 +52,14 @@ python cmake.py
 
 libraries are generated in `lanelet_python/lanelet2/`. You can move `lanelet2` directory to your python library path.
 
+
+## Test
+
 You can test each lib at `build` with `make test` command.
 ```
 cd lanelet_core/build
 make test
 ```
-
-## Test
 
 After adding `lanelet2` to your python library path, you can test it at `lanelet2_python/test`.
 ```
