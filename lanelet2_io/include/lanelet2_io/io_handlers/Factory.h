@@ -1,6 +1,7 @@
 #pragma once
 #include <lanelet2_core/utility/Utilities.h>
 
+#include <iostream>
 #include <cstring>
 #include <functional>
 #include <map>
@@ -153,6 +154,7 @@ template <class T>
 class RegisterParser {
  public:
   RegisterParser() {
+
     static_assert(!utils::strequal(T::name(), ""), "You did not overload the name() function!");
     ParserFactory::instance().registerParser(
         T::name(), T::extension(), [](const Projector& projector, const io::Configuration& config) -> Parser* {

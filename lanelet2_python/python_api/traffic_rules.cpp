@@ -50,7 +50,8 @@ std::string asString() {
   return Val;
 }
 
-BOOST_PYTHON_MODULE(PYTHON_API_MODULE_NAME) {  // NOLINT
+// BOOST_PYTHON_MODULE(PYTHON_API_MODULE_NAME) {  // NOLINT
+BOOST_PYTHON_MODULE(traffic_rules) {  // NOLINT
   auto core = import("lanelet2.core");
 
   class_<SpeedLimitInformation>("SpeedLimitInformation", "Current speed limit as returned by a traffic rule object")

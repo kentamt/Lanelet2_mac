@@ -10,6 +10,7 @@
 #include <boost/python/return_internal_reference.hpp>
 #include <sstream>
 #include <stdexcept>
+#include <iostream>
 
 #include "lanelet2_core/Attribute.h"
 #include "lanelet2_core/Forward.h"
@@ -469,19 +470,22 @@ std::string repr(const RegulatoryElementConstPtrs& regelems) {
 }
 }  // namespace
 
-BOOST_PYTHON_MODULE(PYTHON_API_MODULE_NAME) {  // NOLINT
-  class_<BasicPoint2d>("BasicPoint2d", "A simple 2D point", init<double, double>((arg("x") = 0., arg("y") = 0.)))
-      .def(init<>("BasicPoint2d()"))
-      .add_property("x", getXWrapper<BasicPoint2d>, setXWrapper<BasicPoint2d>, "x coordinate")
-      .add_property("y", getYWrapper<BasicPoint2d>, setYWrapper<BasicPoint2d>, "y coordinate")
-      .def("__add__", addWrapper<BasicPoint2d>)
-      .def("__sub__", subWrapper<BasicPoint2d>)
-      .def("__mul__", mulWrapper<BasicPoint2d, double>)
-      .def("__rmul__", mulWrapper<BasicPoint2d, double>)
-      .def("__div__", divWrapper<BasicPoint2d, double>)
-      .def(
-          "__repr__", +[](BasicPoint2d p) { return makeRepr("BasicPoint2d", p.x(), p.y()); })
-      .def(self_ns::str(self_ns::self));
+// BOOST_PYTHON_MODULE(PYTHON_API_MODULE_NAME) {  // NOLINT
+ BOOST_PYTHON_MODULE(core) {  // NOLINT
+
+  class_<BasicPoint2d>("BasicPoint2d",
+		       "A simple 2D point",
+		       init<double, double>((arg("x")=0.0, arg("y")=0.0)))
+    .def(init<>("BasicPoint2d()"))
+    .add_property("x", getXWrapper<BasicPoint2d>, setXWrapper<BasicPoint2d>, "x coordinate")
+    .add_property("y", getYWrapper<BasicPoint2d>, setYWrapper<BasicPoint2d>, "y coordinate")
+    .def("__add__", addWrapper<BasicPoint2d>)
+    .def("__sub__", subWrapper<BasicPoint2d>)
+    .def("__mul__", mulWrapper<BasicPoint2d, double>)
+    .def("__rmul__", mulWrapper<BasicPoint2d, double>)
+    .def("__div__", divWrapper<BasicPoint2d, double>)
+    .def("__repr__", +[](BasicPoint2d p) { return makeRepr("BasicPoint2d", p.x(), p.y()); })
+    .def(self_ns::str(self_ns::self));
 
   class_<Eigen::Vector2d>("Vector2d", "A simple point", no_init)
       .add_property("x", getXWrapper<BasicPoint2d>, setXWrapper<BasicPoint2d>, "x coordinate")

@@ -34,6 +34,7 @@ Parser::Ptr ParserFactory::create(const std::string& parserName, const Projector
 
 Parser::Ptr ParserFactory::createFromExtension(const std::string& extension, const Projector& projector,
                                                const io::Configuration& config) {
+
   ParserFactory& inst = ParserFactory::instance();
   auto it = inst.extensionRegistry_.find(extension);
   if (it != inst.extensionRegistry_.end()) {
@@ -41,7 +42,7 @@ Parser::Ptr ParserFactory::createFromExtension(const std::string& extension, con
     return newObj;
   }
   throw UnsupportedExtensionError("Requested extension " + extension +
-                                  " is not supported! Supported extensions are: " + format(availableExtensions()));
+                                  " is not supported!!!!!!!!!!!!!! Supported extensions are: " + format(availableExtensions()));
 }
 
 std::vector<std::string> ParserFactory::availableParsers() {
@@ -54,12 +55,15 @@ std::vector<std::string> ParserFactory::availableParsers() {
 }
 
 std::vector<std::string> ParserFactory::availableExtensions() {
+
   std::vector<std::string> extensions;
   for (const auto& parser : ParserFactory::instance().extensionRegistry_) {
     extensions.push_back(parser.first);
   }
+  
   std::sort(extensions.begin(), extensions.end());
   return extensions;
+
 }
 
 ParserFactory& ParserFactory::instance() {
@@ -69,6 +73,7 @@ ParserFactory& ParserFactory::instance() {
 
 void ParserFactory::registerParser(const std::string& strategy, const std::string& extension,
                                    const ParserCreationFcn& factoryFunction) {
+
   registry_[strategy] = factoryFunction;
   if (!extension.empty()) {
     extensionRegistry_[extension] = factoryFunction;

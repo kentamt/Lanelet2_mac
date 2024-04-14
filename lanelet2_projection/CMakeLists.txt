@@ -1,69 +1,119 @@
-set(MRT_PKG_VERSION 4.0.0)
-# Modify only if you know what you are doing!
 cmake_minimum_required(VERSION 3.5.1)
-project(lanelet2_projection)
+project(lanelet2_projection VERSION 4.0.0)
 
-###################
-## Find packages ##
-###################
-find_package(mrt_cmake_modules REQUIRED)
-include(UseMrtStdCompilerFlags)
-include(GatherDeps)
 
-# You can add a custom.cmake in order to add special handling for this package. E.g. you can do:
-# list(REMOVE_ITEM DEPENDEND_PACKAGES <package name 1> <package name 2> ...)
-# To remove libs which cannot be found automatically. You can also "find_package" other, custom dependencies there.
-# You can also set PROJECT_INSTALL_FILES to install files that are not installed by default.
-if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/custom.cmake")
-    include("${CMAKE_CURRENT_SOURCE_DIR}/custom.cmake")
-endif()
+# Set C++ Standard to C++14 or later
+set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
 
-find_package(AutoDeps REQUIRED COMPONENTS ${DEPENDEND_PACKAGES})
+# Find required packages
+find_package(Boost REQUIRED COMPONENTS system)
+find_package(Eigen3 3.3 REQUIRED NO_MODULE)
+find_package(pugixml REQUIRED)
+find_package(GeographicLib REQUIRED)
 
-mrt_parse_package_xml()
+link_directories(
+    ${CMAKE_CURRENT_SOURCE_DIR}/../lanelet2_core/build
+    ${CMAKE_CURRENT_SOURCE_DIR}/../lanelet2_io/build
+    ${CMAKE_CURRENT_SOURCE_DIR}/../lanelet2_matching/build
+    ${CMAKE_CURRENT_SOURCE_DIR}/../lanelet2_projection/build
+    ${CMAKE_CURRENT_SOURCE_DIR}/../lanelet2_routing/build
+    ${CMAKE_CURRENT_SOURCE_DIR}/../lanelet2_traffic_rules/build
+)
 
-########################
-## Add python modules ##
-########################
-# This adds a python module if located under src/{PROJECT_NAME)
-mrt_python_module_setup()
 
-mrt_glob_files(PROJECT_PYTHON_SOURCE_FILES_SRC "python_api/*.cpp")
-if (PROJECT_PYTHON_SOURCE_FILES_SRC)
-    # Add a cpp-python api library. Make sure there are no name collisions with python modules in this project
-    mrt_add_python_api( ${PROJECT_NAME}
-        FILES ${PROJECT_PYTHON_SOURCE_FILES_SRC}
-        )
-endif()
+# Include directories for the current project and dependencies
+include_directories(
+  ${CMAKE_CURRENT_SOURCE_DIR}/include
+  ${CMAKE_CURRENT_SOURCE_DIR}/include/lanelet2_projection
+  ${CMAKE_CURRENT_SOURCE_DIR}/../lanelet2_core/include
+  ${CMAKE_CURRENT_SOURCE_DIR}/../lanelet2_io/include
+  ${CMAKE_CURRENT_SOURCE_DIR}/../lanelet2_matching/include
+  ${CMAKE_CURRENT_SOURCE_DIR}/../lanelet2_traffic_rules/include
+  ${CMAKE_CURRENT_SOURCE_DIR}/../lanelet2_projection/include
+  ${Boost_INCLUDE_DIRS}
+  ${EIGEN3_INCLUDE_DIR}
+  ${pugixml_INCLUDE_DIRS}
+  ${GeographicLib_INCLUDE_DIRS}
+)
 
-############################
-## Read source code files ##
-############################
-mrt_glob_files_recurse(PROJECT_HEADER_FILES_INC "include/*.h" "include/*.hpp" "include/*.cuh")
-mrt_glob_files(PROJECT_SOURCE_FILES_INC "src/*.h" "src/*.hpp" "src/*.cuh")
-mrt_glob_files(PROJECT_SOURCE_FILES_SRC "src/*.cpp" "src/*.cu")
+# Gather source and header files
+file(GLOB_RECURSE PROJECT_SOURCE_FILES "src/*.cpp")
+file(GLOB_RECURSE PROJECT_HEADER_FILES "include/*.h" "include/*.hpp")
 
-###########
-## Build ##
-###########
-# Declare a cpp library
-mrt_add_library(${PROJECT_NAME}
-    INCLUDES ${PROJECT_HEADER_FILES_INC} ${PROJECT_SOURCE_FILES_INC}
-    SOURCES ${PROJECT_SOURCE_FILES_SRC}
-    )
+# Define the library to be built from the sources
+add_library(${PROJECT_NAME} SHARED
+  ${PROJECT_SOURCE_FILES} ${PROJECT_HEADER_FILES})
+target_link_libraries(${PROJECT_NAME}
+  ${Boost_LIBRARIES}
+  ${GeographicLib_LIBRARIES}
+  Eigen3::Eigen
+  pugixml
+  lanelet2_core
+)
+
 
 #############
 ## Install ##
 #############
-# Install all targets, headers by default and scripts and other files if specified (folders or files).
-# This command also exports libraries and config files for dependent packages and this supersedes catkin_package.
-mrt_install(PROGRAMS scripts FILES res data ${PROJECT_INSTALL_FILES})
+
+# Install the library to appropriate locations
+install(TARGETS ${PROJECT_NAME}
+    LIBRARY DESTINATION lib
+    ARCHIVE DESTINATION lib
+    RUNTIME DESTINATION bin
+    INCLUDES DESTINATION include
+)
+
+# Install header files
+install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/
+    DESTINATION include
+    FILES_MATCHING PATTERN "*.h" PATTERN "*.hpp"
+)
+
+# Optionally install additional resources
+install(DIRECTORY res/
+    DESTINATION share/${PROJECT_NAME}/res
+)
+
 
 #############
 ## Testing ##
 #############
-# Add test targets for cpp and python tests
-if (CATKIN_ENABLE_TESTING)
-    mrt_add_tests(test)
-    mrt_add_nosetests(test)
-endif()
+enable_testing()
+# add_subdirectory(../extern/googletest)
+add_subdirectory(../extern/googletest googletest_build)
+
+file(GLOB TEST_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/test/*.cpp")
+
+set(TEST_FILES  # we need to change 
+  test_Geocentric
+  test_LocalCartesian
+  test_Mercator
+  test_UTM
+)
+
+include_directories(
+  ${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR}
+)
+
+foreach(testfile ${TEST_FILES})
+  add_executable(${testfile} test/${testfile}.cpp)
+  target_link_libraries(${testfile}
+    gtest
+    gtest_main
+    lanelet2_core
+    lanelet2_io
+    lanelet2_traffic_rules        
+    lanelet2_matching
+    lanelet2_projection
+    # lanelet2_routing
+    
+  )
+  add_test(NAME ${testfile} COMMAND ${testfile})
+endforeach()
+
+
+
+

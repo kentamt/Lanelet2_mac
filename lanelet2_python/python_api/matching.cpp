@@ -117,7 +117,8 @@ std::vector<ConstLaneletMatchProbabilistic> (*funcWrapperProbabilistic)(const La
 }  // namespace
 using ::converters::VectorToListConverter;
 
-BOOST_PYTHON_MODULE(PYTHON_API_MODULE_NAME) {  // NOLINT
+//BOOST_PYTHON_MODULE(PYTHON_API_MODULE_NAME) {  // NOLINT
+BOOST_PYTHON_MODULE(matching) {  // NOLINT  
   auto core = import("lanelet2.core");
 
   class_<Pose2d>("Pose2d", "2D Isometric Transformation", no_init)

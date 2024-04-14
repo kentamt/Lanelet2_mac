@@ -56,7 +56,8 @@ ErrorMessages writeWithErrorWrapper(const std::string& filename, const LaneletMa
   return errs;
 }
 
-BOOST_PYTHON_MODULE(PYTHON_API_MODULE_NAME) {  // NOLINT
+// BOOST_PYTHON_MODULE(PYTHON_API_MODULE_NAME) {  // NOLINT
+BOOST_PYTHON_MODULE(io) {  // NOLINT  
   auto core = py::import("lanelet2.core");
   auto proj = py::import("lanelet2.projection");
 

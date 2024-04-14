@@ -1,0 +1,18 @@
+[submodule "lanelet2_core/extern/googletest"]
+	path = lanelet2_core/extern/googletest
+	url = https://github.com/google/googletest.git
+[submodule "lanelet2_io/build/extern/googletest"]
+	path = lanelet2_io/build/extern/googletest
+	url = https://github.com/google/googletest.git
+[submodule "lanelet2_matching/extern/googletest"]
+	path = lanelet2_matching/extern/googletest
+	url = https://github.com/google/googletest.git
+[submodule "lanelet2_traffic_rules/extern/googletest"]
+	path = lanelet2_traffic_rules/extern/googletest
+	url = https://github.com/google/googletest.git
+[submodule "lanelet2_projection/extern/googletest"]
+	path = lanelet2_projection/extern/googletest
+	url = https://github.com/google/googletest.git
+[submodule "lanelet2_routing/extern/googletest"]
+	path = lanelet2_routing/extern/googletest
+	url = https://github.com/google/googletest.git

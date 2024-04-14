@@ -115,7 +115,8 @@ object to3D(object o) {
 #undef TO2D_AS
 #undef TO3D_AS
 
-BOOST_PYTHON_MODULE(PYTHON_API_MODULE_NAME) {  // NOLINT
+// BOOST_PYTHON_MODULE(PYTHON_API_MODULE_NAME) {  // NOLINT
+BOOST_PYTHON_MODULE(geometry) {  // NOLINT
   namespace lg = lanelet::geometry;
 
   def("to2D", to2D);

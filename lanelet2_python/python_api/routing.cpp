@@ -52,7 +52,8 @@ Optional<T> objectToOptional(const object& o) {
   return o == object() ? Optional<T>{} : Optional<T>{extract<T>(o)()};
 }
 
-BOOST_PYTHON_MODULE(PYTHON_API_MODULE_NAME) {  // NOLINT
+// BOOST_PYTHON_MODULE(PYTHON_API_MODULE_NAME) {  // NOLINT
+BOOST_PYTHON_MODULE(routing) {  // NOLINT  
   auto trafficRules = import("lanelet2.traffic_rules");
   using namespace lanelet::routing;
 
